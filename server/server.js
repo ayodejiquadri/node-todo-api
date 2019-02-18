@@ -54,7 +54,7 @@ app.delete("/todos/:id",(req,res)=>{
         return res.status(404).send('Invalid Id');
     }
 
-    Todo.findByIdAndRemove(id).then((todo)=>{
+    Todo.findOneAndDelete({_id:id}).then((todo)=>{
         if(!todo){
            return res.status(404).send();
         }
@@ -77,7 +77,7 @@ app.patch("/todos/:id",(req,res)=>{
     }
 
     //return the updated todo
-    Todo.findByIdAndUpdate(id,{$set:body},{new:true}).then((todo)=>{
+    Todo.findOneAndUpdate(id,{$set:body},{new:true}).then((todo)=>{
         if(!todo){
             res.status(404).send()
         }
