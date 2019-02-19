@@ -3,6 +3,7 @@ const _ = require('lodash');
 var express = require('express');
 var bodyParser = require('body-parser');
 var {ObjectID} = require('mongodb');
+const bcrypt = require('bcryptjs');
 
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
@@ -99,6 +100,17 @@ app.post("/users",(req,res)=>{
     .catch((e)=>res.status(400).send(e));
 });
 
+app.post("/users/login",(req,res)=>{
+    var body = _.pick(req.body,['email','password']);
+
+    User.findByCredentials(body.email,body.password).then((user)=>{
+        return user.generateAuthToken().then((token)=>{
+            res.header('x-auth',token).send(user);
+        });
+    }).catch((error)=>{
+        res.status(400).send();
+    }); 
+});
 
 
 app.get("/users/me",authenticate,(req,res)=>{
