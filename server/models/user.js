@@ -41,7 +41,21 @@ UserSchema.methods.toJSON = function(){
     var user = this;
     var userObject = user.toObject();
     return _.pick(userObject,['_id','email']);
+};
+
+UserSchema.methods.removeToken = function(token){
+    var user = this;
+
+    //this will remove  the token object that match passed in token in the token[]
+    return user.update({
+        $pull:{
+            tokens:{
+                token:token
+            }
+        }
+    });
 };  
+
 //we use regular functions and not arrow function because we are using the this keyword
 UserSchema.methods.generateAuthToken = function (){
     var user = this;
